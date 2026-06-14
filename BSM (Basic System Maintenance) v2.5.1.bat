@@ -8,21 +8,25 @@ if %errorLevel% neq 0 (
     pause
     exit /b
 )
+
+for /F %%A in ('echo prompt $E ^| cmd') do set "ESC=%%A"
+set "Reset=%ESC%[0m"
+set "Red=%ESC%[31m"
 :menu
 cls
-echo "  .____   __________           __      __             __             TM "
-echo "  |    |  \______   \         /  \    /  \___________|  | __  ______    "
-echo "  |    |   |    |  _/  ______ \   \/\/   /  _ \_  __ \  |/ / /  ___/    "
-echo "  |    |___|    |   \ /_____/  \        (  <_> )  | \/    <  \___ \     "
-echo "  |_______ \______  /           \__/\  / \____/|__|  |__|_ \/____  >    "
-echo "          \/      \/                 \/                   \/     \/     "
-echo (c) 2026 LB-Works (TM) - All Rights Reserved
+echo     __    ____       _____ __            ___      TM
+echo    / /   / __ )     / ___// /___  ______/ (_)___ 
+echo   / /   / __  /_____\__ \/ __/ / / / __  / / __ \
+echo  / /___/ /_/ /_____/__/ / /_/ /_/ / /_/ / / /_/ /
+echo /_____/_____/     /____/\__/\__,_/\__,_/_/\____/ 
+echo Copyright (c) 2026 LB-Studio (TM)
 echo.
 echo ---------------------------------------------------------------------------------------------
 echo.
-echo BSM (Basic System Maintenance) v2.5.1
-echo WARNING: Please read README.ML before running this script.
-set /p choices=Enter "scan" to run a Full scan. To activate Plugins, type "plugin" next to it. (to learn more, check README.ML)
+echo BSM (Basic System Maintenance) v2.5.2
+echo %Red%WARNING: Please read README.MD before running this script.
+echo LB-Studio (TM) is not held responsible for any damages.%Reset%
+set /p choices=Enter "scan" to run a Full scan. To activate Plugins, type "plugin" next to it.
 
 for %%c in (%choices%) do (
     call :runChoice %%c
@@ -46,10 +50,6 @@ for %%F in ("plugins\*.bat") do (
 )
 
 if "%1"=="scan" (
-:: Delete all system restore points
-echo Deleting all system restore points...
-vssadmin Delete Shadows /All /Quiet
-
 :: Run System File Checker
 echo Running System File Checker...
 sfc /scannow
@@ -72,10 +72,6 @@ for /d %%x in (%temp%\*) do rd /s /q "%%x"
 del /f /s /q "C:\Windows\Temp\*.*"
 
 for /d %%x in (C:\Windows\Temp\*) do rd /s /q "%%x"
-
-:: Clear Downloads folder
-echo Clearing Downloads folder...
-del /f /q "%USERPROFILE%\Downloads\*.*"
 
 setlocal
 
@@ -187,12 +183,6 @@ del /q /s C:\Windows\Minidump\*.*
 :: Delete Windows thumbnail cache
 echo Deleting Windows thumbnail cache...
 del /q "C:\Users\%username%\AppData\Local\Microsoft\Windows\Explorer\thumbcache_*.db"
-
-:: Delete Windows Event Log files
-echo Deleting Windows Event Log files...
-wevtutil cl Application
-wevtutil cl System
-wevtutil cl Security
 
 :: Delete Windows Update files
 echo Cleaning up Windows Update files...
@@ -415,4 +405,3 @@ powershell -command "Clear-RecycleBin -Force"
 )
 
 pause
-
